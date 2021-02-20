@@ -1,80 +1,117 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+call plug#begin('~/.vim/plugged')
+Plug 'Yggdroot/LeaderF'
+Plug 'scrooloose/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'skywind3000/asynctasks.vim'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-fugitive'
+Plug 'honza/vim-snippets'
+Plug 'preservim/nerdcommenter'
+Plug 'thaerkh/vim-workspace'
+Plug 'rafi/awesome-vim-colorschemes'
+Plug 'ahonn/resize.vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'rking/ag.vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'm-pilia/vim-ccls'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+call plug#end()
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'https://github.com/altercation/vim-colors-solarized.git'
-Plugin 'bling/vim-airline'
-Plugin 'https://github.com/scrooloose/nerdtree.git'
-Plugin 'https://github.com/Yggdroot/LeaderF.git'
-Plugin 'https://github.com/majutsushi/tagbar.git'
-call vundle#end()            " required
-filetype plugin indent on    " required
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+" GUI Setting
+if has("gui_running")
+	au GUIEnter * simalt ~x
+	set guioptions-=m
+	set guioptions-=T
+	set guioptions-=L
+	set guioptions-=r
+	set guioptions-=b
+	set showtabline=0
+endif
 
-" GUI Configs
-if has("gui_running") 
-    au GUIEnter * simalt ~x " ¥∞ø⁄∆Ù∂Ø ±◊‘∂Ø◊Ó¥ÛªØ 
-    set guioptions-=m " “˛≤ÿ≤Àµ•¿∏ 
-    set guioptions-=T " “˛≤ÿπ§æﬂ¿∏ 
-    set guioptions-=L " “˛≤ÿ◊Û≤‡πˆ∂ØÃı 
-    set guioptions-=r " “˛≤ÿ”“≤‡πˆ∂ØÃı 
-    set guioptions-=b " “˛≤ÿµ◊≤øπˆ∂ØÃı 
-"    set showtabline=0 " “˛≤ÿTab¿∏ 
-endif 
+so ~/.vim/nhx/cocconfig.vim
+so ~/.vim/nhx/keymap.vim
+"so ~/.vim/nhx/defxconfig.vim
 
 " Configs
+set nowrap
+set linebreak
+set background=dark
+set guifont=Courier_new:h10:b:cDEFAULT
 set number
-set ts=4
-set expandtab
-set guifont=courier_new:h10
-set autoread
+set cursorline
+set tabstop=4
+set shiftwidth=4
+set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
 set hlsearch
 set incsearch
 set ignorecase
-set showmatch
-set scrolloff=3
-set background=dark
 set helplang=cn
-set nowrap
+set fileformat=unix
+set foldenable
+set foldmethod=marker
+set mouse=v
+set scrolloff=3
+set termguicolors
+set expandtab
+set smartindent
+set completeopt=longest,menuone
+set ruler
 set whichwrap=h,l
-set cindent
+set backspace=2
+set encoding=utf-8
+"set fileencodings=utf-8
+"set rnu
 
-" Other Config
-syntax enable
-colorscheme solarized
+" Other Configs
+colorscheme molokai
+"let g:rehash256 = 1
+"let g:molokai_original = 1
+let &colorcolumn="80,120"
+syntax on
 filetype plugin indent on
 
-" Tagbar Setting
-let g:tagbar_left = 1
-
-" Cscope
-
-" mapleader
+" Leader setting
 let mapleader=","
-" KEY MAP
-nnoremap <space> :
-noremap <F2> :NERDTreeToggle<cr>
-noremap <F3> :TagbarToggle<cr>
-noremap <F4> :LeaderfMru<cr>
-noremap <F7> :LeaderfFile<cr>
-nmap <leader>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <leader>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap <leader>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>a :cs find a <C-R>=expand("<cword>")<CR><CR>
+
+" Plugin Setting
 
 
+" NERDTree
+let g:NERDTreeWinPos="left"
+let g:NERDTreeWinSize=50
+let g:NERDTreeShowLineNumbers=1
+let g:NERDTreeQuitOnOpen=1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'‚úπ',
+                \ 'Staged'    :'‚úö',
+                \ 'Untracked' :'‚ú≠',
+                \ 'Renamed'   :'‚ûú',
+                \ 'Unmerged'  :'‚ïê',
+                \ 'Deleted'   :'‚úñ',
+                \ 'Dirty'     :'‚úó',
+                \ 'Ignored'   :'‚òí',
+                \ 'Clean'     :'‚úîÔ∏é',
+                \ 'Unknown'   :'?',
+                \ }
+
+" AsyncRun
+let g:asyncrun_open=6
+let g:asynctasks_term_rows = 15
+let g:asynctasks_term_cols = 80
+let g:asynctasks_term_pos = 'bottom'
+
+" Resize windown
+let g:resize_size = 10
+
+" LeaderF
+let g:Lf_UseMemoryCache = 1
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+let g:Lf_WildIgnore = {
+            \ 'dir': ".ccls-cache"
+            \ }
+
+" Ag 
+let g:ag_prg = "rg --vimgrep"
