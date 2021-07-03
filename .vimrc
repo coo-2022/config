@@ -17,6 +17,7 @@ Plug 'rking/ag.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'm-pilia/vim-ccls'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'rust-lang/rust.vim'
 call plug#end()
 
 " GUI Setting
@@ -31,7 +32,6 @@ if has("gui_running")
 endif
 
 so ~/.vim/nhx/cocconfig.vim
-so ~/.vim/nhx/keymap.vim
 "so ~/.vim/nhx/defxconfig.vim
 
 " Configs
@@ -115,3 +115,13 @@ let g:Lf_WildIgnore = {
 
 " Ag 
 let g:ag_prg = "rg --vimgrep"
+
+" Keymap
+nnoremap <F2> :NERDTreeToggle<cr>
+nnoremap <F3> :LeaderfSelf<cr>
+
+noremap ; :
+nnoremap ,ek :e ~/.vim/nhx/keymap.vim<cr>
+nnoremap ,ev :e ~/.vimrc<cr>
+nnoremap ,sv :source ~/.vimrc<cr>
+nnoremap ,sw :Ag <cword><cr>
