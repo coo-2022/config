@@ -106,6 +106,16 @@ function check_result()
     _print_event "Check env setup ok"
 }
 
+function setup_nvim()
+{
+    _print_event "Set up nvim."
+    which nvim
+    if [ $? -ne 0 ]; then
+    fi
+    mkdir -p ~/.config/nvim/
+    cp ./nvim/init.vim ~/.config/nvim/init.vim
+}
+
 function main()
 {
     setup_env
