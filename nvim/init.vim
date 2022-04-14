@@ -1,5 +1,5 @@
-call plug#begin('~/.config/nvim/plugged')
-Plug 'Yggdroot/LeaderF'
+call plug#begin('~/.vim/plugged')
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'skywind3000/asynctasks.vim'
@@ -9,13 +9,21 @@ Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
 Plug 'preservim/nerdcommenter'
 Plug 'thaerkh/vim-workspace'
+Plug 'Shougo/defx.nvim'
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'ahonn/resize.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'rking/ag.vim'
-Plug 'sheerun/vim-polyglot'
-Plug 'm-pilia/vim-ccls'
+Plug 'lfv89/vim-interestingwords'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'neovim/nvim-lspconfig'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'ojroques/nvim-lspfuzzy'
+Plug 'glepnir/lspsaga.nvim'
+Plug 'hrsh7th/nvim-cmp'
+" Plug 'dense-analysis/ale'
 call plug#end()
 
 set nowrap
@@ -44,14 +52,9 @@ set ruler
 set whichwrap=h,l
 set backspace=2
 set encoding=utf-8
-"set fileencodings=utf-8
-"set rnu
 
-"Other Configs
 colorscheme molokai
-"let g:rehash256 = 1
-"let g:molokai_original = 1
-let &colorcolumn="80,120"
+" let &colorcolumn="80,120"
 syntax on
 filetype plugin indent on
 
@@ -80,9 +83,10 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
                 \ }
 
 " AsyncRun
-let g:asyncrun_open=6
+let g:asyncrun_open=20
 let g:asynctasks_term_rows = 15
 let g:asynctasks_term_cols = 80
+let g:asynctasks_term_focus = 0
 let g:asynctasks_term_pos = 'bottom'
 
 " Resize windown
@@ -90,35 +94,114 @@ let g:resize_size = 10
 
 " LeaderF
 let g:Lf_UseMemoryCache = 1
-let g:Lf_WindowPosition = 'popup'
+let g:Lf_WindowPosition = 'bottom'
 let g:Lf_PreviewInPopup = 1
+let g:Lf_WindowHeight = 0.3
 let g:Lf_WildIgnore = {
             \ 'dir': ".ccls-cache"
             \ }
+let g:Lf_RecurseSubmodules = 1
 
-" Ag 
+" highlight cxx
+let g:lsp_cxx_hl_use_text_props = 1
+
+" Ag
 let g:ag_prg = "rg --vimgrep"
 
-" ===============================Keymap Begin=================================
-nnoremap <F2> :NERDTreeToggle<cr>
+" Fugitive
+function! ToggleGStatus()
+    if buflisted(bufname('.git/index'))
+        bd .git/index
+    else
+        Git
+        20wincmd_
+    endif
+endfunction
+command ToggleGStatus :call ToggleGStatus()
+nmap <F9> :ToggleGStatus<CR>
 
-noremap ; :
-nnoremap ,ev :e ~/.config/nvim/init.vim<cr>
-nnoremap ,sv :source ~/.config/nvim/init.vim<cr>
-nnoremap ,sw :Ag <cword><cr>
-nnoremap ,sf :NERDTreeFind<cr>
+" Quickfix
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+nnoremap <silent> <F10> :call ToggleQuickFix()<cr>
 
-" Leaderf
-nnoremap <F3> :LeaderfSelf<cr>
-nnoremap <F7> :LeaderfFile<cr>
+" ALE
+" let g:ale_disable_lsp = 1
+" let g:ale_lint_on_text_changed = 'never'
+" let g:ale_lint_on_insert_leave = 0
+" let g:ale_lint_on_enter = 0
+
+" AsyncTasks
+let g:asynctasks_extra_config = [
+    \ '~/.config/tasks/tasks.ini',
+    \ ]
+
+lua << EOF
+require'lspconfig'.clangd.setup{on_attach}
+require('lspfuzzy').setup {
+    save_last = true
+    }
+EOF
+
+" LSP Config
+nnoremap <silent><leader>s <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent><leader>r <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent><leader>d <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent><leader>a <cmd>lua vim.lsp.buf.code_action()<CR>
+nnoremap <silent><leader>f <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent><leader>b <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+
+" KeyMap
+let mapleader=","
+nnoremap ; :
+nnoremap <leader>ek :vsplit ~/.vim/nhx/keymap.vim<cr>
+nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<cr>
+nnoremap <leader>sk :source ~/.config/nvim/init.vim<cr>
+nnoremap <leader>gd :Gdiffsplit<cr>
+nnoremap <C-p> :LeaderfFile<cr>
+nnoremap <leader>sf :NERDTreeFind<cr>
+nnoremap <C-J> ]c
+nnoremap <C-K> [c
+nnoremap <leader>sw :Leaderf rg -w <C-R>=expand("<cword>")<cr><cr>
+nnoremap <silent><F5> :CocList tasks<cr>
+nnoremap <silent><F3> :Leaderf --recall<cr>
+
 nnoremap <F6> :LeaderfFunction<cr>
-nnoremap <F9> :Git<cr>
+nnoremap <F4> :LeaderfMru<cr>
+nnoremap <F2> :NERDTreeToggle<cr>
+inoremap <C-J> <ESC>
+nnoremap <silent> <F12> :TagbarToggle<cr> 
+nnoremap <silent> <C-N> :tabnext<cr>
 
-" ---------------------------------coc----------------------------------------{{{
-" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
-" unicode characters in the file autoload/float.vim
-set encoding=utf-8
+nnoremap <silent> <F8> :call InterestingWords('n')<cr>
+vnoremap <silent> <F8> :call InterestingWords('v')<cr>
+nnoremap <silent> <backspace> :call UncolorAllWords()<cr>
+nnoremap <silent> <A-h> <C-W>h<cr>
+nnoremap <silent> <A-l> <C-W>l<cr>
+nnoremap <silent> <A-j> <C-W>j<cr>
+nnoremap <silent> <A-k> <C-W>k<cr>
 
+if has("nvim")
+    nnoremap - :CocCommand clangd.switchSourceHeader<cr>
+    nnoremap <A-n> :tabnext<cr>
+    nnoremap <A-p> :tabprev<cr>
+    nnoremap <A-t> :tabnew<cr>
+    nnoremap <A-r> :CocCommand document.showIncomingCalls<cr>
+else
+    nnoremap - :CocCommand clangd.switchSourceHeader<cr>
+    nnoremap <ESC>n :tabnext<cr>
+    nnoremap <ESC>p :tabprev<cr>
+    nnoremap <ESC>t :tabnew<cr>
+    nnoremap <ESC>r :CclsCallHierarchy<cr>
+    nnoremap <ESC>c :CclsCalleeHierarchy<cr>
+endif
+
+" Coc
 " TextEdit might fail if hidden is not set.
 set hidden
 
@@ -138,7 +221,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("nvim-0.5.0") || has("patch-8.1.1564")
+if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
 else
@@ -279,6 +362,4 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-" -------------------------------coc------------------------------------------
-" ===============================Keymap End===================================}}}
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>"
