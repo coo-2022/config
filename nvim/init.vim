@@ -53,6 +53,7 @@ set ruler
 set whichwrap=h,l
 set backspace=2
 set encoding=utf-8
+set mouse=a
 
 colorscheme onedark
 " let &colorcolumn="80,120"
