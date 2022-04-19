@@ -54,7 +54,7 @@ set whichwrap=h,l
 set backspace=2
 set encoding=utf-8
 
-colorscheme molokai
+colorscheme onedark
 " let &colorcolumn="80,120"
 syntax on
 filetype plugin indent on
