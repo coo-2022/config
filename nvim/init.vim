@@ -24,7 +24,6 @@ Plug 'ojroques/nvim-lspfuzzy'
 Plug 'glepnir/lspsaga.nvim'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-" Plug 'dense-analysis/ale'
 call plug#end()
 
 set nowrap
@@ -53,9 +52,8 @@ set ruler
 set whichwrap=h,l
 set backspace=2
 set encoding=utf-8
-set mouse=a
 
-colorscheme onedark
+colorscheme molokai
 " let &colorcolumn="80,120"
 syntax on
 filetype plugin indent on
