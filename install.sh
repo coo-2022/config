@@ -174,6 +174,11 @@ function install_coc_depedency()
     return 0
 }
 
+function install_lsp()
+{
+    return 
+}
+
 function main()
 {
     _print_event "Setup proxy"
